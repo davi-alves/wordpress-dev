@@ -1,0 +1,21 @@
+{
+    "name": "flyingkrai/fetatured_slider",
+    "description": "Slider of featured products.",
+    "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Davi Alves",
+            "email": "flyingkrai@hotmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "mustache/mustache": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Flyingkrai": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
