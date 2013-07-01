@@ -28,5 +28,19 @@ use Flyingkrai\Helpers\Mustache;
  */
 class ConfigPage
 {
+    /**
+     * @var Mustache
+     */
+    protected $mustache = null;
 
+    /**
+     * init class and add wordpress hooks
+     *
+     * @param Mustache $mustache templating object
+     */
+    public function __construct(Mustache $mustache)
+    {
+        //- class helpers
+        $this->mustache = $mustache;
+    }
 }

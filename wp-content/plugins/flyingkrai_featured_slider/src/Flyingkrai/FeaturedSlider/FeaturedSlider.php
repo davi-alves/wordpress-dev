@@ -28,9 +28,10 @@ use Flyingkrai\Helpers\Mustache;
  */
 class FeaturedSlider
 {
-    public static $displayName = '[FeaturedSlider]';
-    public static $namespace = 'flyingkrai_featuredslider';
-    public static $version = '1.0.0';
+    const DISPLAY_NAME = '[FeaturedSlider]';
+    const HOME_DISPLAY_LIMIT = 3;
+    const PLUGIN_NAMESPACE = 'flyingkrai_featuredslider';
+    const VERSION = '1.0.0';
     /**
      * @var FeaturedSlider
      */
@@ -51,6 +52,7 @@ class FeaturedSlider
         add_action('after_setup_theme', array($this, 'registerImageSize'));
         //- init classes
         new MetaBox(self::$mustache);
+        new ConfigPage(self::$mustache);
     }
 
     /**

@@ -35,6 +35,8 @@ class MetaBox
 
     /**
      * init class and add wordpress hooks
+     *
+     * @param Mustache $mustache templating object
      */
     public function __construct(Mustache $mustache)
     {
@@ -45,6 +47,45 @@ class MetaBox
         //- add post save hook
         add_action('save_post', array($this, 'savePost'));
     }
+
+    /**
+     * Return plugin meta name
+     *
+     * @return string
+     */
+    public static function getFieldId()
+    {
+        return FeaturedSlider::PLUGIN_NAMESPACE . '-is_featured-checkbox';
+    }
+
+    /**
+     * Return plugin nonce id
+     *
+     * @return string
+     */
+    public static function getNonceId()
+    {
+        return FeaturedSlider::PLUGIN_NAMESPACE .'_nonce';
+    }
+
+    /**
+     * Get all featured posts
+     *
+     * @param int $limit how many posts
+     *
+     * @return array|string
+     */
+    public static function getAllFeatured($limit)
+    {
+        //@TODO check usage of setup_postdata() > https://codex.wordpress.org/Function_Reference/setup_postdata
+        return get_posts(
+            array(
+                'meta_key' => self::getFieldId(),
+                'posts_per_page' => $limit
+            )
+        );
+    }
+
     /**
      * Create post metaboxes
      *
@@ -53,8 +94,8 @@ class MetaBox
     public function registerMetaBoxes()
     {
         add_meta_box(
-            FeaturedSlider::$namespace . '-is_featured', // $id
-            FeaturedSlider::$displayName, // $title
+            FeaturedSlider::PLUGIN_NAMESPACE . '-is_featured', // $id
+            FeaturedSlider::DISPLAY_NAME, // $title
             array($this, 'showPostMetaBox'), // $callback
             'post', // $page
             'normal', // $context
@@ -74,8 +115,8 @@ class MetaBox
         $data = array(
             'isFeatured' => $this->isPostFeatured($post->ID),
             'nonceCode' => wp_create_nonce(basename(__FILE__)),
-            'nonceId' => $this->getNonceId(),
-            'fieldId' => $this->getFieldId(),
+            'nonceId' => self::getNonceId(),
+            'fieldId' => self::getFieldId(),
             'fieldLabel' => 'Exibir este post na Home?'
         );
 
@@ -92,7 +133,7 @@ class MetaBox
     public function savePost($postId)
     {
         //- verify nonce
-        if (!wp_verify_nonce($_POST[$this->getNonceId()], basename(__FILE__))) {
+        if (!wp_verify_nonce($_POST[self::getNonceId()], basename(__FILE__))) {
             return $postId;
         }
         //- verify autosave
@@ -109,33 +150,13 @@ class MetaBox
         }
 
         //- save meta data
-        $fieldId = $this->getFieldId();
+        $fieldId = self::getFieldId();
         //- check for adding/updating or deleting
         if (isset($_POST[$fieldId]) && $_POST[$fieldId]) {
             update_post_meta($postId, $fieldId, true);
         } else {
             delete_post_meta($postId, $fieldId);
         }
-    }
-
-    /**
-     * Return plugin meta name
-     *
-     * @return string
-     */
-    public function getFieldId()
-    {
-        return FeaturedSlider::$namespace . '-is_featured-checkbox';
-    }
-
-    /**
-     * Return plugin nonce id
-     *
-     * @return string
-     */
-    public function getNonceId()
-    {
-        return FeaturedSlider::$namespace .'_nonce';
     }
 
     /**
@@ -147,6 +168,22 @@ class MetaBox
      */
     public function isPostFeatured($postId)
     {
-        return (get_post_meta($postId, $this->getFieldId(), true));
+        return (get_post_meta($postId, self::getFieldId(), true));
     }
+}
+
+/**
+ * Exposes the object function to global scope
+ *
+ * @param integer $limit quanty
+ *
+ * @return array|string
+ */
+function flying_all_featured($limit = 0)
+{
+    if (! (int) $limit) {
+        $limit = FeaturedSlider::HOME_DISPLAY_LIMIT;
+    }
+
+    print MetaBox::getAllFeatured($limit);
 }
