@@ -51,7 +51,7 @@ class FeaturedSlider
         //- register new image size
         add_action('after_setup_theme', array($this, 'registerImageSize'));
         //- init classes
-        new MetaBox(self::$mustache);
+        // new MetaBox(self::$mustache);
         new ConfigPage(self::$mustache);
     }
 
