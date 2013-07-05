@@ -70,21 +70,65 @@ class ConfigPage
 
     public function renderAdminPage()
     {
+        if (!isset($_GET['step'])) {
+            return $this->settingsAction();
+        }
+
         switch ($_GET['step']) {
+            case 'save':
+                break;
             case 'settings':
             default:
-                $this->settingsAcction();
+                $this->settingsAction();
                 break;
         }
     }
 
-    protected function settingsAcction($value='')
+    protected function settingsAction($value='')
     {
         $this->mustache->render(
             'backend/config_page',
             array(
-                'pageTitle' => self::getMenuTitle()
+                'pageTitle' => self::getMenuTitle(),
+                'screenIcon' => $this->getAdminIcon(),
+                'form' => array(
+                    'action' => $this->getAdminAction(array('step' => 'save')),
+                    'nonce' => $this->getAdminFormNonce(),
+                    'tmpImage' => FLYINGKRAI_FEATURED_SLIDER_URL . 'asserts/blank.gif'
+                ),
             )
+        );
+    }
+
+    protected function getAdminAction($params = array())
+    {
+        return add_query_arg($params);
+    }
+
+    protected function getAdminIcon()
+    {
+        return get_screen_icon('upload');
+    }
+
+    protected function getAdminFormNonce()
+    {
+        return $this->getNonce('admin_form');
+    }
+
+    /**
+     * Generate nonce hidden inpute
+     *
+     * @param  string $action nonce action
+     *
+     * @return string         nonce html
+     */
+    protected function getNonce($action)
+    {
+        return wp_nonce_field(
+            FeaturedSlider::PLUGIN_NAMESPACE . '_nonce',
+            FeaturedSlider::PLUGIN_NAMESPACE . "_{$action}",
+            true,
+            false
         );
     }
 }

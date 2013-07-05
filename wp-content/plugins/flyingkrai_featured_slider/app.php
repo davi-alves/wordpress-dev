@@ -29,6 +29,9 @@ if (!defined('WPINC')) {
 //- constants
 defined('FLYINGKRAI_FEATURED_SLIDER_PATH') ||
     define('FLYINGKRAI_FEATURED_SLIDER_PATH', plugin_dir_path(__FILE__));
+//- constants
+defined('FLYINGKRAI_FEATURED_SLIDER_URL') ||
+    define('FLYINGKRAI_FEATURED_SLIDER_URL', plugins_url('public/', __FILE__));
 
 //- include composer autoloader
 require 'vendor/autoload.php';

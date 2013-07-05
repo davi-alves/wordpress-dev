@@ -40,6 +40,10 @@ class FeaturedSlider
      * @var Mustache_Engine
      */
     protected static $mustache = null;
+    /**
+     * @var boolean
+     */
+    protected $updated = false;
 
     /**
      * init class and add wordpress hooks
@@ -103,6 +107,7 @@ class FeaturedSlider
 
         add_image_size('featured-slider-big', 500, 500);
         add_image_size('featured-slider-thumb', 100, 100);
+        add_image_size('featured-slider-admin-thumb', 220, 100);
     }
 
 }

@@ -1,4 +1,45 @@
 <div class="wrap">
-  <?php screen_icon(); ?>
-  <h2>{{ pageTitle }}</h2>
+  {{{ screen_icon }}}
+  {{# updated? }}
+  <div class='updated'>
+    <p>Theme settings updated successfully.</p>
+  </div>
+  {{/ updated? }}
+  <h2>
+    {{ pageTitle }}
+    <a href="#" class="add-new-h2">Adicionar Novo</a>
+  </h2>
+
+  <br><br>
+
+  <form action="{{ form.action }}" method="post">
+    {{{ form.nonce }}}
+
+    <table class="wp-list-table widefat" cellspacing="0" style="width:40%">
+      <thead>
+        <tr>
+          <th scope="col" class="manage-column">Imagem</th>
+          <th scope="col" class="manage-column" width="25%">Ordem</th>
+          <th scope="col" class="manage-column" width="10%">&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr valign="top">
+          <th scope="row">
+            <img src="{{ form.tmpImage }}" alt="">
+            <input type="hidden" name="images[][path]">
+          </th>
+          <td>
+            <input name="images[][order]" type="text"  class="small-text">
+          </td>
+          <td>
+            <button class="button btn-danger remove">Remover</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="submit">
+      <button type="submit" class="button button-primary">Salvar alterações</button>
+    </p>
+  </form>
 </div>
