@@ -1,0 +1,7 @@
+{
+  "name": "flyingkrai-featured_slider",
+  "version": "1.0.0",
+  "dependencies": {
+    "blockui": "~2.55.0-2013.01.23"
+  }
+}

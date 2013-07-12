@@ -1,0 +1,13 @@
+<tr valign="top" data-ref="image-{{ id }}">
+  <td>
+    <input name="images[{{ id }}][order]" type="text"  class="small-text" value="{{ order }}" style="text-align:center;">
+  </td>
+  <td>
+    <img src="{{ path }}" alt="">
+    <input type="hidden" name="images[{{ id }}][path]" value="{{ path }}">
+    <input type="hidden" name="images[{{ id }}][id]" value="{{ id }}">
+  </td>
+  <td>
+    <button class="button btn-danger remove">Remover</button>
+  </td>
+</tr>

@@ -46,6 +46,16 @@ class ConfigPage
         add_action('admin_menu', array($this, 'addAdminPage'));
     }
 
+    public static function getImages($amount = 0)
+    {
+        $images = get_option(self::getImagesKey(), array());
+        if($amount && count($images) !== 0) {
+            return array_slice($images, 0, $amount);
+        }
+
+        return $images;
+    }
+
     protected static function getMenuPageId()
     {
         return FeaturedSlider::PLUGIN_NAMESPACE . '-admin_page';
@@ -53,7 +63,12 @@ class ConfigPage
 
     protected static function getMenuTitle()
     {
-        return FeaturedSlider::DISPLAY_NAME . ' - Config';
+        return FeaturedSlider::DISPLAY_NAME . ' - Gerência';
+    }
+
+    protected static function getImagesKey()
+    {
+        return FeaturedSlider::PLUGIN_NAMESPACE . '_image_option';
     }
 
     public function addAdminPage()
@@ -93,11 +108,17 @@ class ConfigPage
                 'screenIcon' => $this->getAdminIcon(),
                 'form' => array(
                     'action' => $this->getAdminAction(array('step' => 'save')),
-                    'nonce' => $this->getAdminFormNonce(),
-                    'tmpImage' => FLYINGKRAI_FEATURED_SLIDER_URL . 'asserts/blank.gif'
+                    'nonce' => $this->getAdminFormNonce()
                 ),
+                'images' => self::getImages(),
             )
         );
+    }
+
+    protected function saveAction()
+    {
+        $images = $_POST['images'];
+        $this->validate($images);
     }
 
     protected function getAdminAction($params = array())
@@ -130,5 +151,19 @@ class ConfigPage
             true,
             false
         );
+    }
+
+    protected function getTmpAdminImage()
+    {
+        return FLYINGKRAI_FEATURED_SLIDER_URL . 'asserts/blank.gif';
+    }
+
+    protected function validate(&$images)
+    {
+        $_tmp = array();
+        foreach ($variable as $key => $value) {
+            # code...
+        }
+
     }
 }
