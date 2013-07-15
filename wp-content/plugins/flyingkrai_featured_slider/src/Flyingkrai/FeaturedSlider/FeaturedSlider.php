@@ -53,6 +53,7 @@ class FeaturedSlider
         //- class helpers
         self::$mustache = Mustache::getInstance();
         //- register new image size
+        // @TODO check action wp_handle_upload to resize images after upload && resize-image-after-upload.1.3.0
         add_action('init', array($this, 'registerImageSize'));
         //- init classes
         // new MetaBox(self::$mustache);
