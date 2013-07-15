@@ -2,6 +2,8 @@
   "name": "flyingkrai-featured_slider",
   "version": "1.0.0",
   "dependencies": {
-    "blockui": "~2.55.0-2013.01.23"
+    "blockui": "~2.55.0-2013.01.23",
+    "jquery.ui": "~1.10.3",
+    "jquery": "~2.0.3"
   }
 }

@@ -1,13 +1,14 @@
-<tr valign="top" data-ref="image-{{ id }}">
-  <td>
-    <input name="images[{{ id }}][order]" type="text"  class="small-text" value="{{ order }}" style="text-align:center;">
+<tr valign="top" class="slide-item ui-state-default" data-ref="image-{{ id }}"
+  title="Você pode mover os slides na ORDEM em que eles devem aparecer na home.">
+  <td class="sortable-indicator">
+    <buttom class="ui-icon ui-icon-arrowthick-2-n-s"></buttom>
   </td>
-  <td>
-    <img src="{{ path }}" alt="">
+  <td class="image">
+    <img src="{{ url }}" alt="" height="100">
     <input type="hidden" name="images[{{ id }}][path]" value="{{ path }}">
     <input type="hidden" name="images[{{ id }}][id]" value="{{ id }}">
   </td>
-  <td>
+  <td class="actions">
     <button class="button btn-danger remove">Remover</button>
   </td>
 </tr>

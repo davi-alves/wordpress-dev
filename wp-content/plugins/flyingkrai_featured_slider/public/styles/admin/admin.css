@@ -1,0 +1,7 @@
+.slide-list { list-style-type: none; margin: 0; padding: 0; width: 600px; }
+.slide-list .ui-state-default { background: #F9F9F9; border: 3px dotted #ccc; }
+.slide-list .placeholder { background: #d6d6d6; border: 3px dotted black; height: 106px;}
+.slide-list .slide-item { width: 592px; height: 106px;}
+.slide-list .slide-item .sortable-indicator { vertical-align: middle; width: 59px; }
+.slide-list .slide-item .image{ width: 360px;}
+.slide-list .slide-item .actions{ width: 86px;}

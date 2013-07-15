@@ -53,7 +53,7 @@ class FeaturedSlider
         //- class helpers
         self::$mustache = Mustache::getInstance();
         //- register new image size
-        add_action('after_setup_theme', array($this, 'registerImageSize'));
+        add_action('init', array($this, 'registerImageSize'));
         //- init classes
         // new MetaBox(self::$mustache);
         new ConfigPage(self::$mustache);
@@ -108,6 +108,18 @@ class FeaturedSlider
         add_image_size('featured-slider-big', 500, 500);
         add_image_size('featured-slider-thumb', 100, 100);
         add_image_size('featured-slider-admin-thumb', 220, 100);
+    }
+
+    /**
+     * Get wp baseurl for upload dir
+     *
+     * @return string url
+     */
+    public static function get_upload_baseurl()
+    {
+        $uploadConfig = wp_upload_dir();
+
+        return $uploadConfig['baseurl'];
     }
 
 }
