@@ -96,7 +96,7 @@ class ConfigPage
             return;
         }
         //- styles
-        wp_enqueue_style('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
+        wp_enqueue_style('jquery-ui', FLYINGKRAI_FEATURED_SLIDER_URL .'styles/jquery-ui/smoothness/jquery-ui.min.css');
         wp_enqueue_style('flying-admin',  FLYINGKRAI_FEATURED_SLIDER_URL . 'styles/admin/admin.css');
         //- scripts
         $scriptId = $this->get_admin_script_id();
