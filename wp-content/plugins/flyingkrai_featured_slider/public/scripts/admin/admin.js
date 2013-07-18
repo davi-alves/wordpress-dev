@@ -4,11 +4,28 @@ var Flying;
 Flying = Flying || {};
 
 Flying.Admin = (function($) {
-  var bindEvents, checkEmptyList, countList, deleteItem, handleUploadChoise, showImageUpload, sortableList, __addNew, __item, __list, __remove;
+  var bindEvents, countList, deleteItem, getEmptyList, handleUploadChoise, showImageUpload, sortableList, __addNew, __emptyList, __item, __list, __remove;
   __addNew = '.slide-add-new';
   __remove = '.remove';
   __list = '.slide-list tbody';
   __item = '.slide-item';
+  __emptyList = '';
+  getEmptyList = function() {
+    return $.ajax({
+      url: Flying.url,
+      type: 'post',
+      dataType: 'html',
+      data: {
+        action: Flying.admin_action,
+        ajaxAction: 'empty_line',
+        nonce: Flying.nonce
+      }
+    }).done(function(data) {
+      return __emptyList = data;
+    }).fail(function() {
+      return console.log('Oh noes!');
+    });
+  };
   sortableList = function() {
     $(__list).sortable({
       placeholder: 'placeholder',
@@ -21,9 +38,8 @@ Flying.Admin = (function($) {
     return window.tb_show('', 'media-upload.php?type=image&TB_iframe=true');
   };
   handleUploadChoise = function(html) {
-    var image, imageId, imageUrl;
+    var image, imageId;
     image = jQuery('img', html);
-    imageUrl = image.attr('src');
     imageId = image.attr('class').replace(/(.*?)wp-image-/, '');
     window.tb_remove();
     return $.ajax({
@@ -34,7 +50,6 @@ Flying.Admin = (function($) {
         action: Flying.admin_action,
         ajaxAction: 'new_line',
         image: {
-          url: imageUrl,
           id: imageId
         },
         nonce: Flying.nonce
@@ -57,24 +72,11 @@ Flying.Admin = (function($) {
     if (countList() > 1) {
       return item.remove();
     } else {
-      return $.ajax({
-        url: Flying.url,
-        type: 'post',
-        dataType: 'html',
-        data: {
-          action: Flying.admin_action,
-          ajaxAction: 'empty_line',
-          nonce: Flying.nonce
-        }
-      }).done(function(data) {
-        return $(__list).empty().append(data);
-      }).fail(function() {
-        return console.log('Oh noes!');
-      });
+      return $(__list).empty().append(__emptyList);
     }
   };
-  checkEmptyList = function() {};
   bindEvents = function() {
+    getEmptyList();
     $(__addNew).bind('click', function(event) {
       event.preventDefault();
       return showImageUpload();

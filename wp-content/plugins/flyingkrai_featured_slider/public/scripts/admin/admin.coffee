@@ -6,6 +6,23 @@ Flying.Admin = ( ($)->
   __remove = '.remove'
   __list = '.slide-list tbody'
   __item = '.slide-item'
+  __emptyList = ''
+
+  getEmptyList = ->
+    $.ajax(
+      url: Flying.url
+      type: 'post'
+      dataType: 'html'
+      data:
+        action: Flying.admin_action
+        ajaxAction: 'empty_line'
+        nonce: Flying.nonce
+    ).done((data) ->
+      __emptyList = data
+    ).fail(->
+      console.log 'Oh noes!'
+    )
+
 
   sortableList = ->
     $(__list).sortable(
@@ -20,7 +37,6 @@ Flying.Admin = ( ($)->
 
   handleUploadChoise = (html)->
     image = jQuery('img',html)
-    imageUrl = image.attr('src')
     imageId = image.attr('class').replace(/(.*?)wp-image-/, '')
     window.tb_remove();
     $.ajax(
@@ -31,7 +47,6 @@ Flying.Admin = ( ($)->
         action: Flying.admin_action
         ajaxAction: 'new_line'
         image:
-          url: imageUrl
           id: imageId
         nonce: Flying.nonce
     ).done((data) ->
@@ -49,23 +64,10 @@ Flying.Admin = ( ($)->
     if countList() > 1
       item.remove()
     else
-      $.ajax(
-        url: Flying.url
-        type: 'post'
-        dataType: 'html'
-        data:
-          action: Flying.admin_action
-          ajaxAction: 'empty_line'
-          nonce: Flying.nonce
-      ).done((data) ->
-        $(__list).empty().append data
-      ).fail(->
-        console.log 'Oh noes!'
-      )
-
-  checkEmptyList = ->
+      $(__list).empty().append __emptyList
 
   bindEvents = ->
+    getEmptyList()
     #- bind new slide link
     $(__addNew).bind 'click', (event) ->
       event.preventDefault()

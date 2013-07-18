@@ -41,4 +41,4 @@ register_activation_hook(__FILE__, array( 'Flyingkrai\\FeaturedSlider\\FeaturedS
 register_deactivation_hook(__FILE__, array( 'Flyingkrai\\FeaturedSlider\\FeaturedSlider', 'deactivate' ));
 
 //- initialize class
-FeaturedSlider::getInstance();
+FeaturedSlider::get_instance();

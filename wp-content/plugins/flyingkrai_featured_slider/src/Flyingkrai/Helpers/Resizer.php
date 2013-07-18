@@ -50,22 +50,49 @@ class Resizer
 
         return self::$_instance;
     }
-    public function resize($file, $dimension, $type = 'height')
+
+    public function get_file_name_by_dimensions($file, $width, $height)
     {
+        $ext = '.' . end(explode('.', $file));
+        $newExt = "-{$width}x{$height}" . $ext;
+        $pos = strrpos($file, $ext);
+        return substr_replace($file, $newExt, $pos, strlen($ext));
+    }
+
+    public function calculate_dimensions($file, $dimension)
+    {
+        if (!is_file($file)) {
+            throw new \Exception('Arquivo não existe');
+        }
         $fileInfo = getimagesize($file);
+        $type = ($fileInfo[0] > $fileInfo[1]) ? 'width' : 'heigh';
+        $width = $height = 0;
         switch ($type) {
             case 'height':
                 $height = $dimension;
-                $width = (int) (($dimension * $fileInfo[0]) / $imageInfo[1]);
+                $width = (int) (($dimension * $fileInfo[0]) / $fileInfo[1]);
                 break;
             case 'width':
                 $width = $dimension;
-                $height = (int) (($dimension * $fileInfo[1]) / $imageInfo[0]);
+                $height = (int) (($dimension * $fileInfo[1]) / $fileInfo[0]);
                 break;
         }
-        //@todo create new file name
+        return compact('width', 'height', 'fileInfo');
+    }
 
-        $this->_do_resize($file, $fileInfo, $file, $width, $height);
+    public function resize($file, $dimension)
+    {
+        if(!is_file($file)) {
+            return;
+        }
+        $calc = $this->calculate_dimensions($file, $dimension);
+
+        $newFile = $this->get_file_name_by_dimensions($file, $calc['width'], $calc['height']);
+        if (is_file($newFile)) {
+            return $newFile;
+        }
+
+        $this->_do_resize($file, $calc['fileInfo'], $newFile,  $calc['width'], $calc['height']);
     }
 
     private function _do_resize($oldFile, $oldFileInfo, $newFile, $width, $height)
@@ -87,6 +114,9 @@ class Resizer
                 imagesavealpha($newImage, true);
                 break;
         }
+        if (null === $newImage) {
+            return false;
+        }
 
         if($newImage === null) {
             return $oldFile;
@@ -98,7 +128,7 @@ class Resizer
            imagecopyresized($newImage, $oldImage, 0, 0, 0, 0, $width, $height, $oldFileInfo[0], $oldFileInfo[1]);
          }
 
-         $this->_save($image, $newFile, $oldFileInfo['mime']);
+         $this->_save($newImage, $newFile, $oldFileInfo['mime']);
     }
 
     private function _create_image($image, $imageInfo)
@@ -132,6 +162,7 @@ class Resizer
             imagegif($image, $file);
             break;
         }
+        @chmod($file, 0777);
     }
 
 }

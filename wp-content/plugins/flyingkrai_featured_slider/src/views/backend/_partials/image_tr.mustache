@@ -1,14 +1,15 @@
-<tr valign="top" class="slide-item ui-state-default" data-ref="image-{{ id }}"
-  title="Você pode mover os slides na ORDEM em que eles devem aparecer na home.">
-  <td class="sortable-indicator">
+<tr valign="top" class="slide-item ui-state-default" data-ref="image-{{ id }}">
+  <td class="">
     <buttom class="ui-icon ui-icon-arrowthick-2-n-s"></buttom>
   </td>
-  <td class="image">
-    <img src="{{ url }}" alt="" height="100">
-    <input type="hidden" name="images[{{ id }}][path]" value="{{ path }}">
+  <td class="">
+    <img src="{{ sizes.fk-admin-thumb.url }}" alt="">
     <input type="hidden" name="images[{{ id }}][id]" value="{{ id }}">
   </td>
-  <td class="actions">
+  <td class="">
+    <input type="text" class="regular-text" name="images[{{ id }}][link]" value="{{ link }}">
+  </td>
+  <td class="">
     <button class="button btn-danger remove">Remover</button>
   </td>
 </tr>

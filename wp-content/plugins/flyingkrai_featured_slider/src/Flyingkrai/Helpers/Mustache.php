@@ -68,7 +68,7 @@ class Mustache extends Mustache_Engine
      *  @see Mustache_Engine
      *  @return Mustache
      */
-    public static function getInstance()
+    public static function get_instance()
     {
         if (null === self::$_instance) {
 

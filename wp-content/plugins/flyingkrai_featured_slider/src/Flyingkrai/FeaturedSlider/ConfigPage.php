@@ -59,37 +59,6 @@ class ConfigPage
         add_action('admin_menu', array($this, 'add_admin_page'));
     }
 
-    public static function get_images($amount = 0)
-    {
-        $images = get_option(self::get_images_key(), array());
-        if($amount && count($images) !== 0) {
-            return array_slice($images, 0, $amount);
-        }
-
-        foreach ($images as $index => $image) {
-            $images[$index]['url'] = self::get_image_url($image['path']);
-        }
-
-        return $images;
-    }
-
-    protected static function get_images_key()
-    {
-        return FeaturedSlider::PLUGIN_NAMESPACE . '_image_option';
-    }
-
-    protected static function get_image_url($image, $to_database = false)
-    {
-        $baseUrl = FeaturedSlider::get_upload_baseurl();
-        if ($to_database) {
-            $url = str_replace($baseUrl, '', $image);
-        }else {
-            $url = $baseUrl . $image;
-        }
-
-        return $url;
-    }
-
     public function admin_scripts()
     {
         if (!$this->is_admin_page()) {
@@ -178,18 +147,12 @@ class ConfigPage
 
                 $image = $_POST['image'];
                 $imageId = (isset($image['id'])) ? $image['id'] : 0;
-                $imageUrl = (isset($image['url'])) ? $image['url'] : '';
-                if (!$imageUrl || !$imageId) {
+                if (!$imageId) {
                     die('Image info missing');
                 }
-                $imagePath = self::get_image_url($imageUrl, true);
                 print $this->mustache->render(
                     'backend/_partials/image_tr',
-                    array(
-                        'id' => $imageId,
-                        'url' => $imageUrl,
-                        'path' => $imagePath,
-                    )
+                    FeaturedSlider::get_image_by_id($imageId)
                 );
                 break;
             case 'empty_line':
@@ -216,7 +179,7 @@ class ConfigPage
                     'action' => $this->get_admin_action_url(array('step' => 'save')),
                     'nonce' => $this->get_admin_form_nonce()
                 ),
-                'images' => self::get_images(),
+                'images' => FeaturedSlider::get_images(),
             )
         );
     }
@@ -232,7 +195,7 @@ class ConfigPage
         }
         $images = array_merge(array(), $images);
 
-        update_option(self::get_images_key(), $images);
+        update_option(FeaturedSlider::get_images_key(), $images);
         $this->redirect_to_form(array('updated' => true));
     }
 
@@ -333,9 +296,6 @@ class ConfigPage
                 case self::ERROR_SAVING:
                     $message['text'] = 'Ops! Ocorreu um erro ao salvar as configurações.';
                     break;
-                case self::ERROR_IMAGES_NOT_FOUND:
-                    $message['text'] = 'Imagens não encontradas.';
-                    break;
                 case self::ERROR_IMAGES_INVALID:
                     $message['text'] = 'Imagens inválidas.';
                     break;
@@ -358,7 +318,7 @@ class ConfigPage
         $_tmp = array();
         $validated = true;
         foreach ($images as $image) {
-            if (!isset($image['id']) || !$image['id'] || !isset($image['path']) || !$image['path']) {
+            if (!isset($image['id']) || !$image['id']) {
                 $validated = false;
                 break;
             }

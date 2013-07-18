@@ -1,7 +1,9 @@
-.slide-list { list-style-type: none; margin: 0; padding: 0; width: 600px; }
+.slide-list { list-style-type: none; margin: 0; padding: 0; width: 660px; }
 .slide-list .ui-state-default { background: #F9F9F9; border: 3px dotted #ccc; }
 .slide-list .placeholder { background: #d6d6d6; border: 3px dotted black; height: 106px;}
-.slide-list .slide-item { width: 592px; height: 106px;}
-.slide-list .slide-item .sortable-indicator { vertical-align: middle; width: 59px; }
-.slide-list .slide-item .image{ width: 360px;}
-.slide-list .slide-item .actions{ width: 86px;}
+.slide-list .slide-item { width: 100%; height: 106px;}
+.slide-list .slide-item > td { vertical-align: middle;}
+.slide-list .slide-item .sortable-indicator { vertical-align: middle; width: 57px; }
+.slide-list .slide-item .image { width: 193px;}
+.slide-list .slide-item .link { width: 316px;}
+.slide-list .slide-item .actions { width: 86px;}
