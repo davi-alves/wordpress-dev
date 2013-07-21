@@ -14,7 +14,6 @@
 namespace Flyingkrai\FeaturedSlider;
 
 use Flyingkrai\Helpers\Mustache;
-use Flyingkrai\Helpers\Resizer;
 
 /**
  * FeaturedSlider class
@@ -30,41 +29,26 @@ use Flyingkrai\Helpers\Resizer;
 class FeaturedSlider
 {
     const DISPLAY_NAME = '[FeaturedSlider]';
-    const HOME_DISPLAY_LIMIT = 3;
     const PLUGIN_NAMESPACE = 'flyingkrai_featuredslider';
     const VERSION = '1.0.0';
     /**
      * @var Mustache_Engine
      */
-    protected static $mustache = null;
+    protected static $_mustache = null;
     /**
      * @var FeaturedSlider
      */
     private static $_instance = null;
+    private static $_instancied = false;
 
-    private static $imageSizes = array(
-        'fk-big' => array('width' => 500, 'height' => 500, 'crop' => false),
-        'fk-thumb' => array('width' => 110, 'height' => 100, 'crop' => false),
+    private static $_imageSizes = array(
         'fk-admin-thumb' => array('width' => 220, 'height' => 100, 'crop' => false),
     );
 
     private static $uploadConfig = array();
 
-    /**
-     * init class and add wordpress hooks
-     */
     protected function __construct()
     {
-        self::$uploadConfig = wp_upload_dir();
-        //- class helpers
-        self::$mustache = Mustache::get_instance();
-        //- register new image size
-        add_filter( 'intermediate_image_sizes_advanced', array($this, 'add_image_sizes'));
-        // add_action('wp_handle_upload', array($this, 'fix_image_sizes'));
-        // add_filter('image_resize_dimensions', array($this, 'add_image_sizes'));
-        //- init classes
-        // new MetaBox(self::$mustache);
-        new ConfigPage(self::$mustache);
     }
 
     /**
@@ -77,6 +61,7 @@ class FeaturedSlider
 
         if (null === self::$_instance) {
             self::$_instance = new self;
+            self::$_instancied = true;
         }
 
         return self::$_instance;
@@ -89,6 +74,7 @@ class FeaturedSlider
      */
     public static function activate()
     {
+        update_option(self::get_instance()->get_admin_settings_key(), self::get_instance()->get_admin_settings());
     }
 
     /**
@@ -100,15 +86,53 @@ class FeaturedSlider
     {
     }
 
-    public static function get_images($amount = 0)
+    /**
+     * init class and add wordpress hooks
+     */
+    public function init()
     {
-        $images = get_option(self::get_images_key(), array());
-        if($amount && count($images) !== 0) {
-            return array_slice($images, 0, $amount);
+        self::$uploadConfig = wp_upload_dir();
+        //- class helpers
+        self::$_mustache = Mustache::get_instance();
+        //- register new image size
+        add_filter( 'intermediate_image_sizes_advanced', array($this, 'add_image_sizes'));
+        //- template redirect
+        add_action( 'template_redirect', array($this, 'add_slideshow_to_home'));
+        //- init classes
+        new ConfigPage(self::$_instance, self::$_mustache);
+    }
+
+    public function get_admin_settings()
+    {
+        $settings = get_option(
+            $this->get_admin_settings_key(),
+            array(
+                'slides_qty' => 3,
+                'images' => array(
+                    'big' => array(
+                        'width' => 500,
+                        'height' => 500,
+                    ),
+                    'thumb' => array(
+                        'width' => 110,
+                        'height' => 100,
+                    ),
+                ),
+            )
+        );
+
+        return $settings;
+    }
+
+    public function get_images()
+    {
+        $images = get_option($this->get_images_key(), array());
+        if (count($images) === 0) {
+            return $images;
         }
 
         foreach ($images as $index => $image) {
-            $_img = self::get_image_by_id($image['id']);
+            $_img = $this->get_image_by_id($image['id']);
             if (!$_img) {
                 continue;
             }
@@ -119,7 +143,32 @@ class FeaturedSlider
         return $images;
     }
 
-    public static function get_image_by_id($id)
+    public function get_images_to_display($amount)
+    {
+        $_imgs = $this->get_images();
+        if (count($_imgs) === 0) {
+            return $_imgs;
+        }
+        if (!$amount) {
+            $amount = $this->get_slides_qty_setting();
+        }
+
+       $images = array();
+        foreach ($_imgs as $key => $image) {
+            foreach ($image['sizes'] as $size => $data) {
+                if (strpos($size, 'admin') !== false) {
+                    continue;
+                }
+                $size = str_replace('fk-', '', $size);
+               $images[$key][$size] = $data;
+            }
+            $images[$key]['link'] = $image['link'];
+        }
+
+        return array_slice($images, 0, $amount);
+    }
+
+    public function get_image_by_id($id)
     {
         $url = wp_get_attachment_url($id);
         if (!$id) {
@@ -129,14 +178,14 @@ class FeaturedSlider
         return array(
             'id' => $id,
             'url' => $url,
-            'sizes' => self::get_image_sizes_by_id($id)
+            'sizes' => $this->get_image_sizes_by_id($id)
         );
     }
 
-    public static function get_image_sizes_by_id($id)
+    private function get_image_sizes_by_id($id)
     {
         $sizes = array();
-        foreach (self::$imageSizes as $size => $config) {
+        foreach ($this->get_images_settings() as $size => $config) {
             list($url, $width, $height) = wp_get_attachment_image_src($id, $size);
             $sizes[$size] = compact('url', 'width', 'height');
         }
@@ -144,9 +193,14 @@ class FeaturedSlider
         return $sizes;
     }
 
-    public static function get_images_key()
+    public function get_images_key()
     {
         return self::PLUGIN_NAMESPACE . '_image_option';
+    }
+
+    public function get_admin_settings_key()
+    {
+        return self::PLUGIN_NAMESPACE . '_settings_option';
     }
 
     public function add_image_sizes($sizes)
@@ -154,15 +208,54 @@ class FeaturedSlider
         if (!is_array($sizes)) {
             $sizes = array();
         }
+        $imageSizes = $this->get_images_settings();
 
-        return array_merge($sizes, self::$imageSizes);
+        return array_merge($sizes, $imageSizes);
     }
 
-}
+    public function add_slideshow_to_home()
+    {
+        if (is_home()) {
+            $themeTemplate = get_template_directory() . '/home-featuredslideshow.php';
+            if (is_file($themeTemplate)) {
+                include($template);
+            } else {
+                include($this->get_views_path() . '/frontend/home-featuredslideshow.php');
+            }
+            exit();
+        }
+    }
 
-// expose public methods
+    protected function get_images_settings()
+    {
+        $settings = $this->get_admin_settings();
+        $imageSizes = self::$_imageSizes;
+        $imageSizes = array_merge(
+            $imageSizes,
+            array(
+                'fk-big' => array_merge(
+                    $settings['images']['big'],
+                    array('crop' => false)
+                ),
+                'fk-thumb' => array_merge(
+                    $settings['images']['thumb'],
+                    array('crop' => false)
+                ),
+            )
+        );
 
-function flyingkrai_get_slideshow_images($amount = 3)
-{
-    return FeaturedSlider::get_images($amount);
+        return $imageSizes;
+    }
+
+    private function get_slides_qty_setting()
+    {
+        $settings = $this->get_admin_settings();
+        return $settings['slides_qty'];
+    }
+
+    private function get_views_path()
+    {
+        return FLYINGKRAI_FEATURED_SLIDER_PATH . 'src/views';
+    }
+
 }

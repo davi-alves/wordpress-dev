@@ -1,0 +1,40 @@
+<br>
+<form action="{{ form.action }}" method="post">
+  {{{ form.nonce }}}
+  <table class="form-table">
+    <tr valign="top">
+      <th scope="row">
+        <label for="blogname">Nº de slides</label>
+      </th>
+      <td>
+        <input name="settings[slides_qty]" type="text" id="blogname" value="{{ settings.slides_qty }}"
+          class="small-text">
+        </td>
+    </tr>
+    <tr valign="top">
+      <th scope="row">
+        <label for="blogname">Proporções da imagem</label>
+      </th>
+      <td>
+        <input name="settings[images][big][width]" type="text" id="blogname" value="{{ settings.images.big.width }}"
+          class="small-text"> x
+        <input name="settings[images][big][height]" type="text" id="blogname" value="{{ settings.images.big.height }}"
+          class="small-text">
+        </td>
+    </tr>
+    <tr valign="top">
+      <th scope="row">
+        <label for="blogname">Proporções da thumbnail</label>
+      </th>
+      <td>
+        <input name="settings[images][thumb][width]" type="text" id="blogname" value="{{ settings.images.thumb.width }}"
+          class="small-text"> x
+        <input name="settings[images][thumb][height]" type="text" id="blogname" value="{{ settings.images.thumb.height }}"
+          class="small-text">
+        </td>
+    </tr>
+  </table>
+  <p class="submit">
+    <button type="submit" class="button button-primary">Salvar alterações</button>
+  </p>
+</form>

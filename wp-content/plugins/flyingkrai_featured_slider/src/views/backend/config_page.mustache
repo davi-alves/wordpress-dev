@@ -2,7 +2,7 @@
   {{{ screenIcon }}}
   {{# message }}
   <div class='{{ type }}'>
-    <p>{{ text }}</p>
+    <p>{{{ text }}}</p>
   </div>
   {{/ message }}
   <h2>
@@ -10,34 +10,19 @@
     <a href="#" class="add-new-h2 slide-add-new">Adicionar Novo</a>
   </h2>
 
-  <div class="tool-box">
-    <h3 class="title">Arraste as imagens para mudar a orde em que elas são exibidas.</h3>
+  <h2 class="nav-tab-wrapper">
+    <a href="{{ tabs.slides }}" class="nav-tab {{ tabs.isSlideActive }}">Slides</a>
+    <a href="{{ tabs.settings }}" class="nav-tab {{ tabs.isSettingsActive }}">Configurações</a>
+  </h2>
 
-    <form action="{{ form.action }}" method="post">
-      {{{ form.nonce }}}
-      <table class="wp-list-table widefat slide-list" cellspacing="0">
-        <thead>
-          <tr>
-            <th class="sortable-indicator">&nbsp;</th>
-            <th scope="col" class="manage-column image">Imagem</th>
-            <th scope="col" class="manage-column link">Link</th>
-            <th scope="col" class="manage-column actions">&nbsp;</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{# images }}
-            {{> backend/_partials/image_tr }}
-          {{/ images }}
-          {{^ images }}
-            {{> backend/_partials/empty_tr }}
-          {{/ images }}
-        </tbody>
-      </table>
-      <p class="submit">
-        <button type="submit" class="button button-primary">Salvar alterações</button>
-      </p>
-    </form>
-  </div>
+  {{# tabs.isSlideActive }}
+    {{> backend/_partials/slides_tab }}
+  {{/ tabs.isSlideActive }}
+
+  {{# tabs.isSettingsActive }}
+    {{> backend/_partials/settings_tab }}
+  {{/ tabs.isSettingsActive }}
+
 </div>
 
 <script type="text/template" id="image_tr-template">

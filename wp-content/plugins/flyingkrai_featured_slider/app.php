@@ -36,9 +36,16 @@ defined('FLYINGKRAI_FEATURED_SLIDER_URL') ||
 //- include composer autoloader
 require 'vendor/autoload.php';
 
+//- initialize class
+FeaturedSlider::get_instance()->init();
+
 //- activation rooks
 register_activation_hook(__FILE__, array( 'Flyingkrai\\FeaturedSlider\\FeaturedSlider', 'activate' ));
 register_deactivation_hook(__FILE__, array( 'Flyingkrai\\FeaturedSlider\\FeaturedSlider', 'deactivate' ));
 
-//- initialize class
-FeaturedSlider::get_instance();
+//- expose funtions to global scope
+
+function flyingkrai_get_slideshow_images($amount = 0)
+{
+    return FeaturedSlider::get_instance()->get_images_to_display($amount);
+}
