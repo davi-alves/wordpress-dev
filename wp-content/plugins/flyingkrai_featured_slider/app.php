@@ -20,6 +20,7 @@
  */
 
 use \Flyingkrai\FeaturedSlider\FeaturedSlider;
+use \Flyingkrai\Helpers\Slides;
 
 //- validation against direct access
 if (!defined('WPINC')) {
@@ -43,9 +44,54 @@ FeaturedSlider::get_instance()->init();
 register_activation_hook(__FILE__, array( 'Flyingkrai\\FeaturedSlider\\FeaturedSlider', 'activate' ));
 register_deactivation_hook(__FILE__, array( 'Flyingkrai\\FeaturedSlider\\FeaturedSlider', 'deactivate' ));
 
-//- expose funtions to global scope
+//- expose wp loop alike funcions
+$flyingkrai_slides_helper = new Slides;
 
-function flyingkrai_get_slideshow_images($amount = 0)
+function fk_have_slides()
 {
-    return FeaturedSlider::get_instance()->get_images_to_display($amount);
+    global $flyingkrai_slides_helper;
+
+    return $flyingkrai_slides_helper->have_slides();
+}
+
+function fk_the_slide()
+{
+    global $flyingkrai_slides_helper;
+
+    $flyingkrai_slides_helper->walk();
+}
+
+function fk_get_the_slide()
+{
+    global $flyingkrai_slides_helper;
+
+    return $flyingkrai_slides_helper->get_current();
+}
+
+function fk_the_link()
+{
+    global $flyingkrai_slides_helper;
+
+    print $flyingkrai_slides_helper->get_current()->link;
+}
+
+function fk_the_big_url()
+{
+    global $flyingkrai_slides_helper;
+
+    print $flyingkrai_slides_helper->get_current()->big->url;
+}
+
+function fk_the_thumb_url()
+{
+    global $flyingkrai_slides_helper;
+
+    print $flyingkrai_slides_helper->get_current()->thumb->url;
+}
+
+function fk_reset_slides()
+{
+    global $flyingkrai_slides_helper;
+
+    $flyingkrai_slides_helper->reset();
 }

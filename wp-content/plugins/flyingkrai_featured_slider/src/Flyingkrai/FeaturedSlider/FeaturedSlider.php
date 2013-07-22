@@ -14,6 +14,7 @@
 namespace Flyingkrai\FeaturedSlider;
 
 use Flyingkrai\Helpers\Mustache;
+use \stdClass;
 
 /**
  * FeaturedSlider class
@@ -143,27 +144,27 @@ class FeaturedSlider
         return $images;
     }
 
-    public function get_images_to_display($amount)
+    public function get_images_to_display()
     {
         $_imgs = $this->get_images();
         if (count($_imgs) === 0) {
             return $_imgs;
         }
-        if (!$amount) {
-            $amount = $this->get_slides_qty_setting();
-        }
 
        $images = array();
         foreach ($_imgs as $key => $image) {
+            $images[$key] = new stdClass;
             foreach ($image['sizes'] as $size => $data) {
                 if (strpos($size, 'admin') !== false) {
                     continue;
                 }
                 $size = str_replace('fk-', '', $size);
-               $images[$key][$size] = $data;
+                $images[$key]->$size = (object)$data;
             }
-            $images[$key]['link'] = $image['link'];
+            $images[$key]->link = $image['link'];
         }
+
+        $amount = $this->get_slides_qty_setting();
 
         return array_slice($images, 0, $amount);
     }
