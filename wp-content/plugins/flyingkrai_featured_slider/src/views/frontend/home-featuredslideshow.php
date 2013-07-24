@@ -36,11 +36,13 @@
         <?php while(fk_have_slides()): fk_the_slide(); ?>
             <div class="thumb">
                 <a href="<?php fk_the_link(); ?>">
-                    <img src="<?php fk_the_thumb_url() ?>" data-ref="<?php fk_the_big_url() ?>">
+                    <img src="<?php fk_the_thumb_url() ?>" data-ref="<?php fk_the_big_url() ?>" style="float: left;">
+                    <small style="float: left; clear: both;"><?php fk_the_legend() ?></small>
                 </a>
             </div>
         <?php endwhile; ?>
     </div>
+    <br clear="all">
 </div>
 <?php endif; ?>
 

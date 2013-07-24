@@ -68,6 +68,13 @@ function fk_get_the_slide()
     return $flyingkrai_slides_helper->get_current();
 }
 
+function fk_the_legend()
+{
+    global $flyingkrai_slides_helper;
+
+    print esc_attr($flyingkrai_slides_helper->get_current()->legend);
+}
+
 function fk_the_link()
 {
     global $flyingkrai_slides_helper;

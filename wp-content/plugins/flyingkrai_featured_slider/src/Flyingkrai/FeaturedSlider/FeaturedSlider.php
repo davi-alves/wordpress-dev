@@ -162,6 +162,7 @@ class FeaturedSlider
                 $images[$key]->$size = (object)$data;
             }
             $images[$key]->link = $image['link'];
+            $images[$key]->legend = $image['legend'];
         }
 
         $amount = $this->get_slides_qty_setting();

@@ -1,15 +1,18 @@
 <tr valign="top" class="slide-item ui-state-default" data-ref="image-{{ id }}">
-  <td class="">
+  <td>
     <buttom class="ui-icon ui-icon-arrowthick-2-n-s"></buttom>
   </td>
-  <td class="">
+  <td>
     <img src="{{ sizes.fk-admin-thumb.url }}" alt="">
     <input type="hidden" name="images[{{ id }}][id]" value="{{ id }}">
   </td>
-  <td class="">
+  <td>
+    <textarea class="regular-text code" rows="6" cols="35" name="images[{{ id }}][legend]">{{ legend }}</textarea>
+  </td>
+  <td>
     <input type="text" class="regular-text" name="images[{{ id }}][link]" value="{{ link }}">
   </td>
-  <td class="">
+  <td>
     <button class="button btn-danger remove">Remover</button>
   </td>
 </tr>
