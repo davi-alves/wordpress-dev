@@ -178,6 +178,7 @@ class ConfigPage
                 'tabs' => array(
                     'slides' => $this->get_admin_tab_link('slides'),
                     'settings' => $this->get_admin_tab_link('settings'),
+                    'help' => $this->get_admin_tab_link('help'),
                 ),
                 'message' => $this->get_request_message(),
         );
@@ -213,9 +214,9 @@ class ConfigPage
                     array(
                         'form' => array(
                             'action' => $this->get_admin_action_url(array('step' => 'save', 'tab' => 'slides')),
-                            'nonce' => $this->get_admin_form_nonce()
+                            'nonce' => $this->get_admin_form_nonce(),
                         ),
-                        'images' => $this->featuredSlider->get_images(),
+                        'images' => $this->get_images(),
                     )
                 );
                 break;
@@ -229,6 +230,15 @@ class ConfigPage
                             'nonce' => $this->get_admin_form_nonce()
                         ),
                         'settings' => $this->featuredSlider->get_admin_settings(),
+                    )
+                );
+                break;
+            case 'help':
+                $pageConfig['tabs']['isHelpActive'] = 'nav-tab-active';
+                $pageConfig = array_merge(
+                    $pageConfig,
+                    array(
+                        // settings if needed
                     )
                 );
                 break;
@@ -274,66 +284,6 @@ class ConfigPage
         print '<script>window.location.href="' .
             $this->get_admin_action_url($params) . '";</script>';
         exit;
-    }
-
-    protected function get_admin_icon()
-    {
-        return get_screen_icon('upload');
-    }
-
-    protected function get_menu_page_id()
-    {
-        return FeaturedSlider::PLUGIN_NAMESPACE . '_admin_page';
-    }
-
-    protected function get_menu_page_wp_id()
-    {
-        return 'toplevel_page_' . $this->get_menu_page_id();
-    }
-
-    protected function get_menu_page_url()
-    {
-        return menu_page_url($this->get_menu_page_id(), false);
-    }
-
-    protected function get_menu_title()
-    {
-        return FeaturedSlider::DISPLAY_NAME . ' - Gerência';
-    }
-
-    protected function get_admin_tab_link($tab)
-    {
-        return $this->get_admin_action_url(array('tab' => $tab));
-    }
-
-    protected function get_admin_form_nonce_id()
-    {
-        return FeaturedSlider::PLUGIN_NAMESPACE . '_nonce';
-    }
-
-    protected function get_admin_form_nonce_field()
-    {
-        return FeaturedSlider::PLUGIN_NAMESPACE . '_field';
-    }
-
-    protected function get_admin_form_nonce()
-    {
-        return wp_nonce_field(
-            $this->get_admin_form_nonce_id(),
-            $this->get_admin_form_nonce_field(),
-            true,
-            false
-        );
-    }
-
-    protected function get_admin_script_id()
-    {
-        return FeaturedSlider::PLUGIN_NAMESPACE . '_ajax';
-    }
-
-    protected function get_nonce_ajax()
-    {
-        return $this->get_nonce_code($this->get_admin_script_id());
     }
 
     /**
@@ -437,5 +387,95 @@ class ConfigPage
     protected function validate_admin_form_nonce()
     {
         return wp_verify_nonce($_POST[$this->get_admin_form_nonce_field()] , $this->get_admin_form_nonce_id());
+    }
+
+    protected function get_admin_form_nonce()
+    {
+        return wp_nonce_field(
+            $this->get_admin_form_nonce_id(),
+            $this->get_admin_form_nonce_field(),
+            true,
+            false
+        );
+    }
+
+    protected function get_nonce_ajax()
+    {
+        return $this->get_nonce_code($this->get_admin_script_id());
+    }
+
+    protected function get_images()
+    {
+        $images = $this->featuredSlider->get_images();
+        if (empty($images)) {
+            return array();
+        }
+        //var_dump($images);exit();
+        $pages = $this->get_posts();
+        $result = array();
+        foreach ($images as $key => $image) {
+            $result[$key] = $image;
+            $selected = (isset($image['pid']) && $image['pid']) ? (int) $image['pid'] : 0;
+            $result[$key]['posts'] = array_map(function ($page) use ($selected) {
+                return array(
+                    'ID' => $page->ID,
+                    'post_title' => $page->post_title,
+                    'selected' => $page->ID == $selected
+                );
+            }, $pages);
+        }
+
+        return $result;
+    }
+
+    protected function get_posts()
+    {
+        $settings = $this->featuredSlider->get_admin_settings();
+        return query_posts(array('post_type' => $settings['post_type']));
+    }
+
+    protected function get_admin_icon()
+    {
+        return get_screen_icon('upload');
+    }
+
+    protected function get_menu_page_id()
+    {
+        return FeaturedSlider::PLUGIN_NAMESPACE . '_admin_page';
+    }
+
+    protected function get_menu_page_wp_id()
+    {
+        return 'toplevel_page_' . $this->get_menu_page_id();
+    }
+
+    protected function get_menu_page_url()
+    {
+        return menu_page_url($this->get_menu_page_id(), false);
+    }
+
+    protected function get_menu_title()
+    {
+        return FeaturedSlider::DISPLAY_NAME . ' - Gerência';
+    }
+
+    protected function get_admin_tab_link($tab)
+    {
+        return $this->get_admin_action_url(array('tab' => $tab));
+    }
+
+    protected function get_admin_form_nonce_id()
+    {
+        return FeaturedSlider::PLUGIN_NAMESPACE . '_nonce';
+    }
+
+    protected function get_admin_form_nonce_field()
+    {
+        return FeaturedSlider::PLUGIN_NAMESPACE . '_field';
+    }
+
+    protected function get_admin_script_id()
+    {
+        return FeaturedSlider::PLUGIN_NAMESPACE . '_ajax';
     }
 }

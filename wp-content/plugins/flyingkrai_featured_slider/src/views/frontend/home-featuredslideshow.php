@@ -22,27 +22,34 @@
     * Para customizar esse template crie um arquivo com o mesmo nome (home-featuredslideshow.php) na raiz do tema
 
      ##### -->
-
+<style>
+    .hidden {display: none;opacity: 0;}
+</style>
 <?php if(fk_have_slides()): ?>
-
-<div class="slideshow-images">
-    <?php fk_the_slide(); ?>
-    <div class="big">
-        <a href="<?php fk_the_link() ?>">
-            <img src="<?php fk_the_big_url() ?>">
-        </a>
-    </div>
-    <div class="thumbs">
+<div class="superbanner">
+    <ul class="images">
         <?php while(fk_have_slides()): fk_the_slide(); ?>
-            <div class="thumb">
+        <li>
+            <a href="<?php fk_the_link() ?>">
+                <img src="<?php fk_the_big_url() ?>">
+            </a>
+        </li>
+        <?php endwhile; ?>
+    </ul>
+    <div class="miniaturas">
+        <?php fk_reset_slides() ?>
+        <?php while(fk_have_slides()): fk_the_slide(); ?>
+        <ul class="min">
+            <li>
                 <a href="<?php fk_the_link(); ?>">
-                    <img src="<?php fk_the_thumb_url() ?>" data-ref="<?php fk_the_big_url() ?>" style="float: left;">
-                    <small style="float: left; clear: both;"><?php fk_the_legend() ?></small>
+                    <img src="<?php fk_the_thumb_url() ?>">
                 </a>
-            </div>
+                <h3><?php fk_the_title() ?></h3>
+                <address><?php fk_the_address() ?></address>
+            </li>
+        </ul>
         <?php endwhile; ?>
     </div>
-    <br clear="all">
 </div>
 <?php endif; ?>
 

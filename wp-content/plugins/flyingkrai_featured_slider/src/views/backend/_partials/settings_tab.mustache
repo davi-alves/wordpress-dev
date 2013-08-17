@@ -4,34 +4,55 @@
   <table class="form-table">
     <tr valign="top">
       <th scope="row">
-        <label for="blogname">Nº de slides</label>
+        <label>Exibir na Home</label>
       </th>
       <td>
-        <input name="settings[slides_qty]" type="text" id="blogname" value="{{ settings.slides_qty }}"
-          class="small-text">
-        </td>
+        <input name="settings[override_home]" type="checkbox" {{# settings.override_home }}checked="checked"{{/settings.override_home}}/>
+        <p class="description">
+          Essa opção sobrescreve o template da Home usando o template do plugin.
+          Lembrando que o template do plugin pode se sobrescrito criando um arquivo <code>home-featuredslideshow.php</code>
+          na raiz do template. <br/>
+          Com essa opção desabilitada será necessário usar as funções de helper descritas na aba de ajuda.
+        </p>
+      </td>
     </tr>
     <tr valign="top">
       <th scope="row">
-        <label for="blogname">Proporções da imagem</label>
+        <label>Tipo de posts usados no slide</label>
       </th>
       <td>
-        <input name="settings[images][big][width]" type="text" id="blogname" value="{{ settings.images.big.width }}"
-          class="small-text"> x
-        <input name="settings[images][big][height]" type="text" id="blogname" value="{{ settings.images.big.height }}"
-          class="small-text">
-        </td>
+        <input name="settings[post_type]" type="text" value="{{ settings.post_type }}"
+          class="regular-text"></td>
     </tr>
     <tr valign="top">
       <th scope="row">
-        <label for="blogname">Proporções da thumbnail</label>
+        <label>Nº de slides</label>
       </th>
       <td>
-        <input name="settings[images][thumb][width]" type="text" id="blogname" value="{{ settings.images.thumb.width }}"
-          class="small-text"> x
-        <input name="settings[images][thumb][height]" type="text" id="blogname" value="{{ settings.images.thumb.height }}"
+        <input name="settings[slides_qty]" type="text" value="{{ settings.slides_qty }}"
+          class="small-text"></td>
+    </tr>
+    <tr valign="top">
+      <th scope="row">
+        <label>Proporções da imagem</label>
+      </th>
+      <td>
+        <input name="settings[images][big][width]" type="text" value="{{ settings.images.big.width }}"
           class="small-text">
-        </td>
+        x
+        <input name="settings[images][big][height]" type="text" value="{{ settings.images.big.height }}"
+          class="small-text"></td>
+    </tr>
+    <tr valign="top">
+      <th scope="row">
+        <label>Proporções da thumbnail</label>
+      </th>
+      <td>
+        <input name="settings[images][thumb][width]" type="text" value="{{ settings.images.thumb.width }}"
+          class="small-text">
+        x
+        <input name="settings[images][thumb][height]" type="text" value="{{ settings.images.thumb.height }}"
+          class="small-text"></td>
     </tr>
   </table>
   <p class="submit">

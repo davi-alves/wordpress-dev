@@ -99,6 +99,7 @@ class FeaturedSlider
         add_filter( 'intermediate_image_sizes_advanced', array($this, 'add_image_sizes'));
         //- template redirect
         add_action( 'template_redirect', array($this, 'add_slideshow_to_home'));
+        add_action( 'wp_enqueue_scripts', array($this, 'add_frotend_scripts') );
         //- init classes
         new ConfigPage(self::$_instance, self::$_mustache);
     }
@@ -108,6 +109,8 @@ class FeaturedSlider
         $settings = get_option(
             $this->get_admin_settings_key(),
             array(
+                'override_home' => false,
+                'post_type' => 'page',
                 'slides_qty' => 3,
                 'images' => array(
                     'big' => array(
@@ -161,10 +164,11 @@ class FeaturedSlider
                 $size = str_replace('fk-', '', $size);
                 $images[$key]->$size = (object)$data;
             }
-            $images[$key]->link = $image['link'];
-            $images[$key]->legend = $image['legend'];
+            $images[$key]->title = $image['title'];
+            $images[$key]->address = $image['address'];
+            $post = ($image['pid']) ? get_post($image['pid']) : null;
+            $images[$key]->post = $post;
         }
-
         $amount = $this->get_slides_qty_setting();
 
         return array_slice($images, 0, $amount);
@@ -217,7 +221,7 @@ class FeaturedSlider
 
     public function add_slideshow_to_home()
     {
-        if (is_home()) {
+        if (is_home() && $this->is_override_home()) {
             $themeTemplate = get_template_directory() . '/home-featuredslideshow.php';
             if (is_file($themeTemplate)) {
                 include($template);
@@ -225,6 +229,19 @@ class FeaturedSlider
                 include($this->get_views_path() . '/frontend/home-featuredslideshow.php');
             }
             exit();
+        }
+    }
+
+    public function add_frotend_scripts()
+    {
+        if (is_home()) {
+            wp_enqueue_script(
+                self::PLUGIN_NAMESPACE,
+                FLYINGKRAI_FEATURED_SLIDER_URL .'scripts/frontend/slides.js',
+                array('jquery'),
+                self::VERSION,
+                true
+            );
         }
     }
 
@@ -247,6 +264,12 @@ class FeaturedSlider
         );
 
         return $imageSizes;
+    }
+
+    protected function is_override_home()
+    {
+        $adminSettings = $this->get_admin_settings();
+        return isset($adminSettings['override_home']) && $adminSettings['override_home'];
     }
 
     private function get_slides_qty_setting()

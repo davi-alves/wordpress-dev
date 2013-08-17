@@ -4,14 +4,24 @@
   </td>
   <td>
     <img src="{{ sizes.fk-admin-thumb.url }}" alt="">
-    <input type="hidden" name="images[{{ id }}][id]" value="{{ id }}">
+    <input type="hidden" name="images[{{ id }}][id]" value="{{ id }}"></td>
+  <td class="form-table">
+    <div class="field">
+      <label for="title-{{id}}">Título</label>
+      <input type="text" id="title-{{id}}" class="regular-text code" name="images[{{ id }}][title]" value="{{ title }}"/>
+    </div>
+    <div class="field">
+      <label for="address-{{id}}">Endereço</label>
+      <input type="text" id="address-{{id}}" class="regular-text code" name="images[{{ id }}][address]" value="{{ address }}"/>
+    </div>
   </td>
   <td>
-    <textarea class="regular-text code" rows="6" cols="35" name="images[{{ id }}][legend]">{{ legend }}</textarea>
-  </td>
-  <td>
-    <input type="text" class="regular-text" name="images[{{ id }}][link]" value="{{ link }}">
-  </td>
+    <select name="images[{{ id }}][pid]">
+      <option value="">Selecione</option>
+      {{# posts }}
+        <option value="{{ID}}" {{# selected }}selected="selected"{{/ selected }}>{{ post_title }}</option>
+      {{/ posts}}
+    </select>
   <td>
     <button class="button btn-danger remove">Remover</button>
   </td>

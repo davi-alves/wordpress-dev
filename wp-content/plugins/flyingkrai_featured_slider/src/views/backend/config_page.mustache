@@ -13,6 +13,7 @@
   <h2 class="nav-tab-wrapper">
     <a href="{{ tabs.slides }}" class="nav-tab {{ tabs.isSlideActive }}">Slides</a>
     <a href="{{ tabs.settings }}" class="nav-tab {{ tabs.isSettingsActive }}">Configurações</a>
+    <a href="{{ tabs.help }}" class="nav-tab {{ tabs.isHelpActive }}">Ajuda</a>
   </h2>
 
   {{# tabs.isSlideActive }}
@@ -22,6 +23,10 @@
   {{# tabs.isSettingsActive }}
     {{> backend/_partials/settings_tab }}
   {{/ tabs.isSettingsActive }}
+
+  {{# tabs.isHelpActive }}
+    {{> backend/_partials/help_tab }}
+  {{/ tabs.isHelpActive }}
 
 </div>
 

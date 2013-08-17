@@ -68,18 +68,28 @@ function fk_get_the_slide()
     return $flyingkrai_slides_helper->get_current();
 }
 
-function fk_the_legend()
+function fk_the_title()
 {
     global $flyingkrai_slides_helper;
 
-    print esc_attr($flyingkrai_slides_helper->get_current()->legend);
+    print esc_attr($flyingkrai_slides_helper->get_current()->title);
+}
+
+function fk_the_address()
+{
+    global $flyingkrai_slides_helper;
+
+    print esc_attr($flyingkrai_slides_helper->get_current()->address);
 }
 
 function fk_the_link()
 {
     global $flyingkrai_slides_helper;
 
-    print $flyingkrai_slides_helper->get_current()->link;
+    $post = $flyingkrai_slides_helper->get_current()->post;
+    if ($post) {
+        print get_permalink($post->link);
+    }
 }
 
 function fk_the_big_url()
