@@ -153,9 +153,11 @@ class ConfigPage
                 if (!$imageId) {
                     die('Image info missing');
                 }
+                $image = $this->featuredSlider->get_image_by_id($imageId);
+                $data = array_merge($image, array('posts' => $this->get_posts()));
                 print $this->mustache->render(
                     'backend/_partials/image_tr',
-                    $this->featuredSlider->get_image_by_id($imageId)
+                    $data
                 );
                 break;
             case 'empty_line':

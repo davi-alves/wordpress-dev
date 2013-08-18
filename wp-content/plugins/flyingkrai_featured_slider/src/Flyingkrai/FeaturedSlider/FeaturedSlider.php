@@ -254,11 +254,11 @@ class FeaturedSlider
             array(
                 'fk-big' => array_merge(
                     $settings['images']['big'],
-                    array('crop' => false)
+                    array('crop' => true)
                 ),
                 'fk-thumb' => array_merge(
                     $settings['images']['thumb'],
-                    array('crop' => false)
+                    array('crop' => true)
                 ),
             )
         );

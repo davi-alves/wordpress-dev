@@ -1,0 +1,35 @@
+<div class="wrap">
+  {{{ screenIcon }}}
+  {{# message }}
+  <div class='{{ type }}'>
+    <p>{{{ text }}}</p>
+  </div>
+  {{/ message }}
+  <h2>
+    {{ pageTitle }}
+    <a href="#" class="add-new-h2 slide-add-new">Adicionar Novo</a>
+  </h2>
+
+  <h2 class="nav-tab-wrapper">
+    <a href="{{ tabs.slides }}" class="nav-tab {{ tabs.isSlideActive }}">Slides</a>
+    <a href="{{ tabs.settings }}" class="nav-tab {{ tabs.isSettingsActive }}">Configurações</a>
+    <a href="{{ tabs.help }}" class="nav-tab {{ tabs.isHelpActive }}">Ajuda</a>
+  </h2>
+
+  {{# tabs.isSlideActive }}
+    {{> backend/_partials/slides_tab }}
+  {{/ tabs.isSlideActive }}
+
+  {{# tabs.isSettingsActive }}
+    {{> backend/_partials/settings_tab }}
+  {{/ tabs.isSettingsActive }}
+
+  {{# tabs.isHelpActive }}
+    {{> backend/_partials/help_tab }}
+  {{/ tabs.isHelpActive }}
+
+</div>
+
+<script type="text/template" id="image_tr-template">
+  {{> backend/_partials/image_tr}}
+</script>
