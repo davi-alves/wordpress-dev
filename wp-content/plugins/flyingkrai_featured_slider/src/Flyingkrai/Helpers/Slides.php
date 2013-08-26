@@ -40,7 +40,8 @@ class Slides
 
     public function walk()
     {
-        $this->current = array_shift($this->slides);
+        $current = array_shift($this->slides);
+        $this->current = $current;
     }
 
     public function get_current()
@@ -62,6 +63,7 @@ class Slides
 
     public function reset()
     {
+        $this->slides = null;
         $this->slides = $this->memory;
     }
 }

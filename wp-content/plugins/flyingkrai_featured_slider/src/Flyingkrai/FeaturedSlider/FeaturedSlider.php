@@ -154,24 +154,26 @@ class FeaturedSlider
             return $_imgs;
         }
 
-       $images = array();
+       $slides = array();
         foreach ($_imgs as $key => $image) {
-            $images[$key] = new stdClass;
+            $slides[$key] = new stdClass;
+            $slides[$key]->post = null;
             foreach ($image['sizes'] as $size => $data) {
                 if (strpos($size, 'admin') !== false) {
                     continue;
                 }
                 $size = str_replace('fk-', '', $size);
-                $images[$key]->$size = (object)$data;
+                $slides[$key]->$size = (object)$data;
             }
-            $images[$key]->title = $image['title'];
-            $images[$key]->address = $image['address'];
+            $slides[$key]->title = $image['title'];
+            $slides[$key]->address = $image['address'];
+
             $post = ($image['pid']) ? get_post($image['pid']) : null;
-            $images[$key]->post = $post;
+            $slides[$key]->post = $post;
         }
         $amount = $this->get_slides_qty_setting();
 
-        return array_slice($images, 0, $amount);
+        return array_slice($slides, 0, $amount);
     }
 
     public function get_image_by_id($id)

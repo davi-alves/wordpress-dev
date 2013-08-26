@@ -433,7 +433,7 @@ class ConfigPage
     protected function get_posts()
     {
         $settings = $this->featuredSlider->get_admin_settings();
-        return query_posts(array('post_type' => $settings['post_type']));
+        return query_posts(array('post_type' => $settings['post_type'], 'post_status' => 'publish'));
     }
 
     protected function get_admin_icon()

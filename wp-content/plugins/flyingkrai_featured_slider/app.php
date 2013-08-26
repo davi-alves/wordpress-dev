@@ -86,9 +86,10 @@ function fk_the_link()
 {
     global $flyingkrai_slides_helper;
 
+    $post = null;
     $post = $flyingkrai_slides_helper->get_current()->post;
     if ($post) {
-        print get_permalink($post->link);
+        print get_permalink($post->ID);
     }
 }
 
