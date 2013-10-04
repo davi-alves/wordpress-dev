@@ -4,7 +4,7 @@
 
   Flyingkrai = window.Flyingkrai || {};
   Flyingkrai.FeaturedSlideshow = (function() {
-    var bindEvents, changeActive, setFirst, __active, __activeClass, __container, __containerElement, __imageItens, __images, __thumbs;
+    var bindEvents, changeActive, doChange, rotate, setFirst, __active, __activeClass, __container, __containerElement, __imageItens, __images, __rotateTimeout, __thumbs, __timeout;
 
     __container = '.superbanner';
     __containerElement = null;
@@ -13,19 +13,44 @@
     __thumbs = 'ul.min';
     __activeClass = 'active';
     __active = "." + __activeClass;
+    __rotateTimeout = 2500;
+    __timeout = null;
     changeActive = function(element) {
-      var actual, current, elementIndex;
+      var current, elementIndex, next;
 
       elementIndex = element.index();
       current = __containerElement.find(__images).find(__active);
       if (current.index() === elementIndex) {
         return false;
       }
-      actual = $(__containerElement.find(__imageItens)[elementIndex]);
+      next = $(__containerElement.find(__imageItens)[elementIndex]);
+      return doChange(current, next);
+    };
+    doChange = function(current, next) {
       return current.stop(true, true).fadeOut(500, function() {
         $(this).removeClass(__activeClass);
-        return actual.addClass(__activeClass).fadeIn(1000);
+        return next.addClass(__activeClass).fadeIn(1000);
       });
+    };
+    rotate = function() {
+      var current, items, next;
+
+      items = __containerElement.find(__imageItens);
+      if (items.length === 0) {
+        return false;
+      }
+      current = items.filter(__active);
+      if (current.length === 0) {
+        return false;
+      }
+      next = current.next();
+      if (next.length === 0) {
+        next = items.filter(':first');
+      }
+      return __timeout = setTimeout(function() {
+        doChange(current, next);
+        return rotate();
+      }, __rotateTimeout);
     };
     setFirst = function() {
       var first;
@@ -34,9 +59,15 @@
       return __containerElement.find(__imageItens).not(first).hide();
     };
     bindEvents = function() {
-      return __containerElement.find(__thumbs).bind('click', function(event) {
+      rotate();
+      __containerElement.find(__thumbs).bind('click', function(event) {
         event.preventDefault();
         return changeActive($(this));
+      });
+      return __containerElement.bind('mouseenter ', function() {
+        return clearTimeout(__timeout);
+      }).bind('mouseleave', function() {
+        return rotate();
       });
     };
     return {
